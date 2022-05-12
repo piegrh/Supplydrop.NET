@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
+using Webhallen.Configurations;
 using Webhallen.Extensions;
 using Webhallen.Models;
 
