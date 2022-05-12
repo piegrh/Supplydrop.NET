@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Webhallen.Services
+namespace Webhallen.Configurations
 {
     public class WebhallenConfiguration
     {

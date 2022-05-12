@@ -9,6 +9,7 @@ using NLog;
 using Webhallen.Services;
 using NLog.Config;
 using NLog.Extensions.Logging;
+using Webhallen.Configurations;
 
 namespace Webhallen
 {
