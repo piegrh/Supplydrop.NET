@@ -58,7 +58,7 @@ namespace Webhallen.Services
 
             long userId = await GetUserId();
 
-            _logger.LogInformation("Navigate to supply-drop page...");
+            _logger.LogInformation("Navigating to supply-drop page...");
             await page.GoToAsync($"https://www.webhallen.com/se/member/{userId}/supply-drop");
 
             for (int i = 0; i < 3; i++)
