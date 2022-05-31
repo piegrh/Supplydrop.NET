@@ -36,7 +36,7 @@ namespace Webhallen
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error running application");
+                _logger.LogError(ex, "Unexpected error running application!");
             }
             finally
             {
