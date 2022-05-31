@@ -1,7 +1,6 @@
 # Supplydrop.NET
 
 I always forget to collect the supply drops at webhallen.com, so I created this ASP.NET core application to do it for me.  
-My login credentials are stored in [appsettings.json](appsettings.json). Do not steal them!
 
 ```c
 // Log from a successful supply drop collection
