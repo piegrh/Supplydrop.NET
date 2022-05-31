@@ -1,6 +1,12 @@
 {
+  "Webhallen": {
+    "commandName": "Project",
+    "launchBrowser": false
+  },
+  "profiles": {
     "Webhallen": {
       "commandName": "Project",
-      "launchBrowser": false
+      "commandLineArgs": "--p password --u user"
     }
+  }
 }

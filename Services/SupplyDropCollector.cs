@@ -84,7 +84,7 @@ namespace Webhallen.Services
 
         private static async Task SetCookieAsync(string? cookie, Page page)
         {
-            string[] keyValue = cookie.Split("=") ?? new[] {"", ""};
+            string[] keyValue = cookie?.Split("=") ?? new[] {"", ""};
             await page.SetCookieAsync(new CookieParam
             {
                 Name = keyValue[0],

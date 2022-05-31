@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Net.Http;
+using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NLog;
@@ -16,13 +17,25 @@ namespace Webhallen
 {
     public class Program
     {
-        public static void Main()
+        public class LoginOptions
         {
-            CreateHostBuilder().Build().Run();
+            [Option('u', "username", Required = true, HelpText = "Your username.")]
+            public string? Username { get; set; }
+
+            [Option('p', "password", Required = true, HelpText = "Your password.")]
+            public string? Password { get; set; }
         }
 
-        public static IHostBuilder CreateHostBuilder()
+        public static void Main(string[] args)
         {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            string? user = Parser.Default.ParseArguments<LoginOptions>(args).Value.Username;
+            string? pass = Parser.Default.ParseArguments<LoginOptions>(args).Value.Password;
+
             return new HostBuilder()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureHostConfiguration(config =>
@@ -50,11 +63,15 @@ namespace Webhallen
                 .ConfigureServices((context, services) =>
                 {
                     if (Configuration == null)
+
                         throw new Exception("NO CONFIG LOADED");
-                    WebhallenConfig webhallenConfig = Configuration.GetSection(nameof(WebhallenConfig)).Get<WebhallenConfig>();
                     services
                         .AddSingleton(Configuration)
-                        .Configure<SupplyDropConfig>(Configuration.GetSection(nameof(SupplyDropConfig)))
+                        .Configure<SupplyDropConfig>(o =>
+                        {
+                            o.Username = user ?? "";
+                            o.Password = pass ?? "";
+                        })
                         .Configure<WebhallenConfig>(Configuration.GetSection(nameof(WebhallenConfig)))
                         .AddSingleton<ISupplyDropConfig>(sp => sp.GetRequiredService<IOptions<SupplyDropConfig>>().Value)
                         .AddSingleton<IWebhallenConfig>(sp => sp.GetRequiredService<IOptions<WebhallenConfig>>().Value)
