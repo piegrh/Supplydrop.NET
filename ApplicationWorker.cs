@@ -30,7 +30,7 @@ namespace Webhallen
             {
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
-                await _supplyDropCollector.CollectSupplyDrop();
+                await _supplyDropCollector.CollectSupplyDropAsync();
                 stopwatch.Stop();
                 _logger.LogInformation($"ApplicationWorker finished after {stopwatch.ElapsedMilliseconds} ms.");
             }

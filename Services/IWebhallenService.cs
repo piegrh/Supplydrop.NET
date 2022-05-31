@@ -6,10 +6,10 @@ namespace Webhallen.Services
 {
     public interface IWebhallenService
     {
-        Task<LoginResponse?> Login(LoginRequest request,CancellationToken ct = default);
+        Task<LoginResponse?> LoginAsync(LoginRequest request,CancellationToken ct = default);
 
-        Task<SupplyDropResponse?> SupplyDrop(CancellationToken ct = default);
+        Task<SupplyDropResponse?> SupplyDropAsync(CancellationToken ct = default);
 
-        Task<MeResponse?> Me(CancellationToken ct = default);
+        Task<MeResponse?> MeAsync(CancellationToken ct = default);
     }
 }

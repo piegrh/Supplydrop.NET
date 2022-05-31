@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NLog;
 using Webhallen.Services;
 using NLog.Config;
@@ -50,19 +51,22 @@ namespace Webhallen
                 {
                     if (Configuration == null)
                         throw new Exception("NO CONFIG LOADED");
-                    WebhallenConfiguration config = new ();
-                    Configuration.Bind("Webhallen", config);
+                    WebhallenConfig webhallenConfig = Configuration.GetSection(nameof(WebhallenConfig)).Get<WebhallenConfig>();
                     services
-                        .AddSingleton(config)
-                        .AddTransient<WebhallenService>()
-                        .AddHttpClient<WebhallenService>(x => x.BaseAddress = new Uri(config.BaseUrl))
-                            .ConfigurePrimaryHttpMessageHandler(x => new LoggingHandler(
-                                Logger ,
-                                true, 
-                                new HttpClientHandler())
-                            )
+                        .AddSingleton(Configuration)
+                        .Configure<SupplyDropConfig>(Configuration.GetSection(nameof(SupplyDropConfig)))
+                        .Configure<WebhallenConfig>(Configuration.GetSection(nameof(WebhallenConfig)))
+                        .AddSingleton<ISupplyDropConfig>(sp => sp.GetRequiredService<IOptions<SupplyDropConfig>>().Value)
+                        .AddSingleton<IWebhallenConfig>(sp => sp.GetRequiredService<IOptions<WebhallenConfig>>().Value)
+                        .AddHttpClient<WebhallenService>()
+                        .ConfigurePrimaryHttpMessageHandler(x => new LoggingHandler(
+                            Logger,
+                            true,
+                            new HttpClientHandler())
+                        )
                         .Services
-                        .AddTransient<SupplyDropCollector>()
+                        .AddTransient<IWebhallenService, WebhallenService>()
+                        .AddSingleton<SupplyDropCollector>()
                         .AddHostedService<ApplicationWorker>();
 
                 })

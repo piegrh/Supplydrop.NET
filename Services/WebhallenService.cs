@@ -1,24 +1,29 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Webhallen.Configurations;
 using Webhallen.Models;
 
 namespace Webhallen.Services
 {
     public class WebhallenService : IWebhallenService
     {
-        public HttpClient _client;
+        private readonly HttpClient _client;
+        private readonly IWebhallenConfig _config;
 
-        public WebhallenService(HttpClient client)
+        public WebhallenService(HttpClient client, IWebhallenConfig config)
         {
             _client = client;
+            _config = config;
+            client.BaseAddress = new Uri(_config.BaseUrl);
         }
 
-        public async Task<LoginResponse?> Login(LoginRequest request, CancellationToken ct = default)
+        public async Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken ct = default)
         {
             HttpResponseMessage response = await _client.PostAsJsonAsync("api/login", request, cancellationToken: ct);
 
@@ -42,16 +47,16 @@ namespace Webhallen.Services
             return loginResponse;
         }
 
-        public async Task<SupplyDropResponse?> SupplyDrop(CancellationToken ct = default)
+        public async Task<SupplyDropResponse?> SupplyDropAsync(CancellationToken ct = default)
         {
             HttpRequestMessage message = new(HttpMethod.Get, $"api/supply-drop");
-            var response = await _client.SendAsync(message, ct);
+            HttpResponseMessage response = await _client.SendAsync(message, ct);
             string content = await response.Content.ReadAsStringAsync();
             SupplyDropResponse? output = JsonConvert.DeserializeObject<SupplyDropResponse>(content);
             return output;
         }
 
-        public async Task<MeResponse?> Me(CancellationToken ct = default)
+        public async Task<MeResponse?> MeAsync(CancellationToken ct = default)
         {
             HttpRequestMessage message = new(HttpMethod.Get, "api/me");
             HttpResponseMessage response = await _client.SendAsync(message, ct);
